@@ -9,7 +9,7 @@
     "projectile_damage": 25
   },
   "game": {
-    "wave_delay_duration": 3.0,
+    "wave_delay_duration": 1.5,
     "coins_per_kill_multiplier": 1.0
   }
 }

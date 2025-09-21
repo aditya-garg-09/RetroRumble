@@ -61,22 +61,20 @@ class WaveManager:
 
     def _generate_procedural_wave(self, wave_number: int):
         """Generate a procedural wave if JSON doesn't exist"""
-        enemy_count = min(3 + wave_number * 2, 15)  # Scale with wave number
-        spawn_delay = max(1.0, 3.0 - wave_number * 0.2)  # Faster spawning on later waves
+        enemy_count = min(9 + wave_number * 6, 45)  # Scale with wave number (3x increase)
 
         self.wave_data = {
             "enemies": [
                 {
                     "type": "slime",
-                    "count": enemy_count,
-                    "spawn_delay": spawn_delay
+                    "count": enemy_count
                 }
             ]
         }
         self._prepare_spawn_queue()
 
     def _prepare_spawn_queue(self):
-        """Prepare the spawn queue from wave data"""
+        """Prepare immediate spawn of all enemies at wave start"""
         self.spawn_queue = []
         self.spawn_timer = 0.0
         self.enemies_spawned = 0
@@ -86,19 +84,16 @@ class WaveManager:
         for enemy_group in self.wave_data["enemies"]:
             enemy_type = enemy_group["type"]
             count = enemy_group["count"]
-            spawn_delay = enemy_group.get("spawn_delay", 2.0)
 
+            # Spawn all enemies immediately (spawn_time = 0)
             for i in range(count):
-                spawn_time = i * spawn_delay
                 self.spawn_queue.append({
                     "type": enemy_type,
-                    "spawn_time": spawn_time
+                    "spawn_time": 0.0  # All spawn immediately
                 })
                 total_enemies += 1
 
         self.enemies_remaining = total_enemies
-        # Sort by spawn time
-        self.spawn_queue.sort(key=lambda x: x["spawn_time"])
 
     def update(self, dt: float, enemies: List[Enemy]) -> List[Enemy]:
         """Update wave spawning and return new enemies to add"""
@@ -130,26 +125,26 @@ class WaveManager:
         return new_enemies
 
     def _spawn_enemy(self, enemy_type: str) -> Enemy:
-        """Spawn a single enemy at arena edge"""
+        """Spawn a single enemy at arena edge with slight position variation"""
         if enemy_type not in self.enemy_templates:
             return None
 
-        # Choose random edge of screen
+        # Choose random edge of screen with variation
         edge = random.randint(0, 3)
-        margin = 50
+        margin = 30
 
         if edge == 0:  # Top
-            x = random.randint(0, self.screen_width)
-            y = -margin
+            x = random.randint(margin, self.screen_width - margin)
+            y = random.randint(-margin, -10)
         elif edge == 1:  # Right
-            x = self.screen_width + margin
-            y = random.randint(0, self.screen_height)
+            x = random.randint(self.screen_width + 10, self.screen_width + margin)
+            y = random.randint(margin, self.screen_height - margin)
         elif edge == 2:  # Bottom
-            x = random.randint(0, self.screen_width)
-            y = self.screen_height + margin
+            x = random.randint(margin, self.screen_width - margin)
+            y = random.randint(self.screen_height + 10, self.screen_height + margin)
         else:  # Left
-            x = -margin
-            y = random.randint(0, self.screen_height)
+            x = random.randint(-margin, -10)
+            y = random.randint(margin, self.screen_height - margin)
 
         enemy_data = self.enemy_templates[enemy_type].copy()
         return Enemy(x, y, enemy_data)

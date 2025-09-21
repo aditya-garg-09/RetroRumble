@@ -4,8 +4,8 @@
   "enemies": [
     {
       "type": "slime",
-      "count": 8,
-      "spawn_delay": 1.0
+      "count": 24,
+      "spawn_delay": 0.4
     }
   ]
 }

@@ -1,13 +1,14 @@
-# Pixel Arena
+# RetroRumble
 
-A top-down arena shooter prototype built with Python and Pygame. Fight waves of enemies, collect coins, and survive as long as possible!
+A top-down arena shooter built with Python and Pygame. Fight waves of enemies, collect coins, and survive as long as possible!
 
 ## Features
 
 - **Player Movement**: WASD controls with mouse-aimed projectile shooting
 - **Wave-based Enemies**: JSON-configured enemy waves with increasing difficulty
 - **Resource Management**: Mana system for shooting with automatic regeneration
-- **HUD**: Real-time display of health, mana, coins, and wave progress
+- **Modern HUD**: Real-time display with gradients, glow effects, and improved styling
+- **Fullscreen Support**: Press F11 to toggle fullscreen mode
 - **Shop System**: Placeholder shop modal (Space to open/close)
 - **Data-driven Design**: JSON configuration for enemies, waves, and game tuning
 
@@ -35,9 +36,11 @@ python main.py
 - **WASD** or **Arrow Keys**: Move player
 - **Mouse**: Aim projectiles
 - **Left Mouse Button**: Shoot (costs mana)
-- **Space**: Open/close shop
-- **P**: Pause/unpause game
+- **Space**: Pause/unpause game
+- **TAB**: Open/close shop
+- **Shift+Space**: Toggle fullscreen
 - **ESC**: Close shop modal
+- **Enter**: Restart game (when game over)
 
 ## Game Mechanics
 
@@ -53,23 +56,24 @@ python main.py
 - Drop coins when defeated
 - Spawn from arena edges in timed waves
 
-### Waves
-- Wave 1: 3 slimes, 2-second spawn delay
-- Wave 2: 5 slimes, 1.5-second spawn delay
-- Wave 3+: Procedurally generated with increasing difficulty
+### Waves (Increased Difficulty)
+- Wave 1: 9 slimes, 0.8-second spawn delay
+- Wave 2: 15 slimes, 0.6-second spawn delay
+- Wave 3: 24 slimes, 0.4-second spawn delay
+- Wave 4+: Procedurally generated with even more enemies
 
 ## Project Structure
 
 ```
 RetroRumble/
-├── main.py                 # Game entry point
+├── main.py                 # Game entry point with fullscreen support
 ├── engine/                 # Core game engine
 │   ├── entity.py          # Base entity class
 │   ├── player.py          # Player implementation
 │   ├── enemy.py           # Enemy implementation
 │   ├── projectile.py      # Projectile implementation
 │   ├── wave_manager.py    # Wave spawning system
-│   └── ui.py              # HUD and shop UI
+│   └── ui.py              # Modern HUD and shop UI with gradients
 ├── scenes/
 │   └── arena_scene.py     # Main game scene
 ├── data/                  # JSON configuration files
@@ -126,5 +130,6 @@ See the prioritized task list below for planned improvements and features.
 ## Troubleshooting
 
 - **ImportError**: Make sure pygame is installed: `pip install pygame`
+- **Fullscreen issues**: Use F11 to toggle, or Alt+Tab to switch windows
 - **Missing assets**: The game will run with colored shapes if sprite files are missing
 - **Performance**: Reduce enemy count in wave files if the game runs slowly

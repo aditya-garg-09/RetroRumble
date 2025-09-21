@@ -40,7 +40,7 @@ class ArenaScene:
         self.coins = 0
         self.game_paused = False
         self.wave_start_delay = 0.0
-        self.wave_delay_duration = 3.0  # Seconds between waves
+        self.wave_delay_duration = self.tuning_data.get("game", {}).get("wave_delay_duration", 1.5)
 
         # Start first wave
         self.wave_manager.load_wave(1)
@@ -49,6 +49,31 @@ class ArenaScene:
         self.mouse_pressed = False
 
         print(f"OK: ArenaScene initialized - starting wave {self.wave_manager.current_wave}")
+
+    def restart_game(self):
+        """Restart the game to initial state"""
+        # Reset player
+        self.player = Player(
+            self.screen_rect.centerx - 16,
+            self.screen_rect.centery - 16,
+            self.tuning_data
+        )
+
+        # Clear all entities
+        self.enemies.clear()
+        self.projectiles.clear()
+
+        # Reset game state
+        self.coins = 0
+        self.game_paused = False
+        self.wave_start_delay = 0.0
+        self.mouse_pressed = False
+
+        # Reset wave manager
+        self.wave_manager = WaveManager(self.screen_rect.width, self.screen_rect.height)
+        self.wave_manager.load_wave(1)
+
+        print("OK: Game restarted - back to wave 1")
 
     def _load_tuning_data(self) -> dict:
         """Load game tuning data from JSON"""
@@ -72,14 +97,29 @@ class ArenaScene:
     def handle_event(self, event):
         """Handle input events"""
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
-                self.shop.toggle_visibility()
-            elif event.key == pygame.K_p:
+            if not self.player.alive and event.key == pygame.K_RETURN:
+                # Restart game on Enter when player is dead
+                self.restart_game()
+            elif self.player.alive and event.key == pygame.K_SPACE:
                 self.game_paused = not self.game_paused
+            elif event.key == pygame.K_TAB:
+                self.shop.toggle_visibility()
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:  # Left mouse button
-                self.mouse_pressed = True
+                if not self.player.alive:
+                    # Check if clicking on restart button
+                    mouse_x, mouse_y = event.pos
+                    button_width = 200
+                    button_height = 60
+                    button_x = self.screen_rect.centerx - button_width // 2
+                    button_y = self.screen_rect.centery + 120
+
+                    if (button_x <= mouse_x <= button_x + button_width and
+                        button_y <= mouse_y <= button_y + button_height):
+                        self.restart_game()
+                else:
+                    self.mouse_pressed = True
 
         if event.type == pygame.MOUSEBUTTONUP:
             if event.button == 1:
@@ -213,3 +253,29 @@ class ArenaScene:
 
         self.screen.blit(wave_text, wave_rect)
         self.screen.blit(coins_text, coins_rect)
+
+        # Restart button
+        button_font = pygame.font.Font(None, 48)
+        restart_text = button_font.render("RESTART", True, (255, 255, 255))
+        restart_bg_color = (60, 120, 180)
+        restart_hover_color = (80, 140, 200)
+
+        # Button dimensions
+        button_width = 200
+        button_height = 60
+        button_x = self.screen_rect.centerx - button_width // 2
+        button_y = self.screen_rect.centery + 120
+
+        # Draw button background
+        pygame.draw.rect(self.screen, restart_bg_color, (button_x, button_y, button_width, button_height))
+        pygame.draw.rect(self.screen, (255, 255, 255), (button_x, button_y, button_width, button_height), 3)
+
+        # Center text on button
+        restart_rect = restart_text.get_rect(center=(button_x + button_width // 2, button_y + button_height // 2))
+        self.screen.blit(restart_text, restart_rect)
+
+        # Instructions
+        instruction_font = pygame.font.Font(None, 24)
+        instruction_text = instruction_font.render("Press ENTER or click RESTART to play again", True, (200, 200, 200))
+        instruction_rect = instruction_text.get_rect(center=(self.screen_rect.centerx, self.screen_rect.centery + 200))
+        self.screen.blit(instruction_text, instruction_rect)
