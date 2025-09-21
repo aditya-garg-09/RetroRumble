@@ -1,0 +1,11 @@
+{
+  "wave_number": 2,
+  "description": "Second wave - more slimes with faster spawning",
+  "enemies": [
+    {
+      "type": "slime",
+      "count": 5,
+      "spawn_delay": 1.5
+    }
+  ]
+}

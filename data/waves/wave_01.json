@@ -1,0 +1,11 @@
+{
+  "wave_number": 1,
+  "description": "First wave - introduces basic slime enemies",
+  "enemies": [
+    {
+      "type": "slime",
+      "count": 3,
+      "spawn_delay": 2.0
+    }
+  ]
+}

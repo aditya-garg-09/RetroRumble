@@ -1,0 +1,11 @@
+{
+  "health": 50,
+  "speed": 80,
+  "damage": 20,
+  "size": 24,
+  "color": [100, 255, 100],
+  "coins": 5,
+  "chase_range": 300,
+  "attack_cooldown": 1.5,
+  "description": "Basic green slime enemy that chases the player and deals contact damage"
+}

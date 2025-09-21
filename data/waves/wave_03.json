@@ -1,0 +1,11 @@
+{
+  "wave_number": 3,
+  "description": "Third wave - challenging slime swarm",
+  "enemies": [
+    {
+      "type": "slime",
+      "count": 8,
+      "spawn_delay": 1.0
+    }
+  ]
+}
